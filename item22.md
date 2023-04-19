@@ -4,7 +4,7 @@
 
 - 일반적인 예시 : null 체크
 
-```
+```javascript
 const el = document.getElementById('foo') // Type is HTMLElement | null
 if (el) {
  el // Type is HTMLElement
@@ -21,7 +21,7 @@ if (el) {
 
 타입 별칭은 'type' 키워드를 사용하여 정의
 
-```
+```javascript
 type TypeName = Type; -> TypeName은 새로운 타입의 이름이고 Type은 해당 타입의 정의 / 예를 들어 코드를 만들어보면
 
 type MyString = string;
@@ -32,7 +32,7 @@ const greeting: MyString = 'Hello, world'; -> 타입 별칭은 복잡한 타입�
 
 분기문에서 예외를 던지거나 함수를 반환하여 블록의 나머지 부분에서 변수의 타입을 좁힐 수 있다.
 
-```
+```javascript
 const el = document.getElementById('foo') // Type is HTMLElement | null
 if (!el) throw new Error('Unable to find #foo') -> el이 없다면 에러반환
 el // Now type is HTMLElement  -> 위의 조건이 통과한다면 HTMLElement
@@ -41,7 +41,7 @@ el.innerHTML = 'Party Time'.blink()
 
 instanceof를 사용한 타입좁히기
 
-```
+```javascript
 function contains(text: string, search: string | RegExp) {
   if (search instanceof RegExp) { -> search과 정규표현식이라면?
     search // Type is RegExp -> 정규표현식
@@ -55,7 +55,7 @@ function contains(text: string, search: string | RegExp) {
 
 속성체크 타입좁히기
 
-```
+```javascript
 interface A {
   a: number
 }
@@ -74,7 +74,7 @@ function pickAB(ab: A | B) {
 ```
 
 Array.isArray 내장함수 타입좁히기
-```
+```javascript
 function contains(text: string, terms: string | string[]) {
   const termList = Array.isArray(terms) ? terms : [terms]  -> terms가 배열이면 terms 아니라면 배열을 만들어라 / 결국엔 참일떈 terms는 string[]이고 거짓일떈 terms는 string이다
   termList // Type is string[]
@@ -86,7 +86,7 @@ function contains(text: string, terms: string | string[]) {
 타입스크립트는 일반적으로 조건문에서 타입을 좁히는 데 매우 능숙하지만 타입을 섣불리 판단하는 실수를 저지르기 쉬우므로 다시 한번 꼼꼼히 따져야한다.
 
 유니온 타입에서 null을 제외하기 위해 잘못된 방법 예제
-```
+```javascript
 const el = document.getElementById('foo') // type is HTMLElement | null
 if (typeof el === 'object') {  -> javascript에서 타입을 체크할때 쓰는 typeof / el은 엘리먼트가 있거나 null 일수도 있다.
   el // Type is HTMLElement | null -> typeof 는 null을 object로 판단한다.
@@ -94,7 +94,7 @@ if (typeof el === 'object') {  -> javascript에서 타입을 체크할때 쓰는
 ```
 
 기본형이 잘못되었을때 문제가 발생
-```
+```javascript
 function foo(x?: number | string | null) { -> x가 있을수도 있고 없을수도 있다 그렇다면 string , number, null, undefined가 올수 있다.
   if (!x) { -> 그런데 not이 붙으면 타입추론할수 있는게 undefined / null / 0 / ""
     x // Type is string | number | null | undefined
@@ -103,7 +103,7 @@ function foo(x?: number | string | null) { -> x가 있을수도 있고 없을수
 ```
 
 명시적 "태그"를 붙여 타입좁히기
-```
+```javascript
 interface UploadEvent {
   type: 'upload'           -> type으로 비교를 하게 된다.  아이템3에서 배운바 있음.
   filename: string
@@ -130,7 +130,7 @@ function handleEvent(e: AppEvent) {
 위의 코드를 태그된 유니온 또는 구별된 유니온 이라고 불린다.
 
 만약 타입스크립트가 타입을 식별하지 못한다면, 식별을 돕기 위해 커스텀 함수를 도입이 가능하다.
-```
+```javascript
 function isInputElement(el: HTMLElement): el is HTMLInputElement {
   return 'value' in el
 }
@@ -157,19 +157,19 @@ isInputElement 함수는 타입가드를 뜻하고 반환값은 el is HTMLInputE
 
 HTMLInputElemnet 타입임을 확신이 가능하다.  이렇게 타입 가드를 사용하면 타입 안정성을 높일 수 있다.
 
-```
+```javascript
 const jackson5 = ['Jackie', 'Tito', 'Jermaine', 'Marlon', 'Michael']
 const members = ['Janet', 'Michael'].map(who => jackson5.find(n => n === who)) // Type is (string | undefined)[]
 ```
 
-```
+```javascript
 const jackson5 = ['Jackie', 'Tito', 'Jermaine', 'Marlon', 'Michael']
 const members = ['Janet', 'Michael'].map(who => jackson5.find(n => n === who)).filter(who => who !== undefined) // Type is (string | undefined)[]
 ```
 ['Janet', 'Michael'] map 함수를 사용하여 jackson5의 배열안에서 동일한것을 찾는 코드인데 타입추론은  (string | undefined)[] 이 나오게 되는데 filter를 써서 undefined를 걸러내도 작동이 되지 않는다.
 
 이떄 타입가드를 사용하면 타입을 잡을수 있다.
-```
+```javascript
 const jackson5 = ['Jackie', 'Tito', 'Jermaine', 'Marlon', 'Michael']
 function isDefined<T>(x: T | undefined): x is T { -> <T>가 어떤 타입이든 올수 있고 x에는 T | undefined가 올수있는걸로 정의 그리고 x가 is T이면 
   return x !== undefined
