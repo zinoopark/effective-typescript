@@ -4,6 +4,7 @@
  2. 타입을 잘 모를때는 any와 unknown을 구분해서 사용하자
 
  `any` : 어떠한 값이든 가능. 타입을 좁혀서 사용하지 않아도 된다.
+ 
  `unknown` : 어떠한 값이 올 수 있는지 모를 때 타입을 좁혀서 사용한다. any타입 이외의 다른 값에 할당이 불가능하다.
 
 
@@ -37,7 +38,7 @@ ex2) Mapbox 라이브러리
 type Expression1 = any;
 type Expression2 = number | string | any[];
 
-const tests: Expressions3[] = [
+const tests: Expressions2[] = [
   10,
   'red',
   true, //error true is not in Expression2
